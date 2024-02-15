@@ -7,3 +7,8 @@ class News(BaseModel):
     date: datetime
     content: str
     img: bytes
+    url: str
+
+
+class NewsList(BaseModel):
+    news: list[News]

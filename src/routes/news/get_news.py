@@ -1,17 +1,19 @@
-import datetime
 import logging
-
 from fastapi import APIRouter
-from ...models.news import News
+
+from ...models.news import News, NewsList
+from src.routes.news.support_files.ecosphere_press_parser import get_news_ecosphere_press
 
 
 router = APIRouter()
 
 
-@router.get("/", response_model=News)
+@router.get("/get_news", response_model=NewsList)
 def get_news():
+    news_list = list()
     try:
-        pass
+        for news in get_news_ecosphere_press():
+            news_list.append(News(**news))
     except Exception as ex:
-        logging.error(f"Can't parse ecoportal.su {ex}")
-    return News(title='test', date=datetime.datetime.now(), content='test2', img='test3'.encode())
+        logging.error(f"Can't parse ecosphere.press {ex}")
+    return NewsList(news=news_list)
