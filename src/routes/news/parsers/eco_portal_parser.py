@@ -16,7 +16,7 @@ def eco_portalsu_parser():
         for i in news:
             inf = dict()
 
-            inf['href'] = 'https://ecoportal.su' + str(i.a['href'])
+            inf['url'] = 'https://ecoportal.su' + str(i.a['href'])
 
             inf['title'] = str(i.a['title']).replace('\xa0', '')
 
@@ -36,7 +36,7 @@ def eco_portalsu_parser():
             for i in article.find_all('p'):
                 main_text.append(i.text)
 
-            inf['text'] = "".join(main_text).replace('\xa0', '')
+            inf['content'] = "".join(main_text).replace('\xa0', '')
 
             inf['article_img'] = requests.get(('https://ecoportal.su' + article.find('newsimage').img['src']), headers=header).content
 

@@ -3,12 +3,8 @@ from datetime import datetime
 
 
 class News(BaseModel):
+    id: int
     title: str
     date: datetime
     content: str
-    img: bytes
     url: str
-
-
-class NewsList(BaseModel):
-    news: list[News]

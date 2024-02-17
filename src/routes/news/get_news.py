@@ -13,7 +13,7 @@ db_session.global_init("src/routes/news/database/news.db")
 router = APIRouter()
 
 
-@router.get("/get_news", response_model=list)
+@router.get("/get_news")
 def get_news():
     news_list = list()
     try:
