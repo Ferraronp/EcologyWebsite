@@ -22,9 +22,9 @@ def eco_portalsu_parser():
             _url = i.a['style'].split('(')[1][:-3]
             inf['img'] = requests.get('https://ecoportal.su' + _url, headers=header).content
 
-            date = (i.div.text).split(' ')
-            day, month, year = map(int, date[0].split('/'))
-            hour, minute = map(int, date[1].split(':'))
+            data = (i.div.text).split(' ')
+            day, month, year = map(int, data[0].split('/'))
+            hour, minute = map(int, data[1].split(':'))
             inf['date'] = datetime.datetime(year, month, day, hour, minute)
 
             article = bs(requests.get(inf['href'], headers=header).content.decode(), 'html.parser')
@@ -43,4 +43,6 @@ def eco_portalsu_parser():
         return date
 
 
+
+print(eco_portalsu_parser())
 
