@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 import datetime
 
+
 def eco_portalsu_parser():
     date = []
     for part in range(1, 5 + 1):
@@ -22,7 +23,7 @@ def eco_portalsu_parser():
             _url = i.a['style'].split('(')[1][:-3]
             inf['img'] = requests.get('https://ecoportal.su' + _url, headers=header).content
 
-            date = (i.div.text).split(' ')
+            date = i.div.text.split(' ')
             day, month, year = map(int, date[0].split('/'))
             hour, minute = map(int, date[1].split(':'))
             inf['date'] = datetime.datetime(year, month, day, hour, minute)
