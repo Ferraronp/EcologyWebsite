@@ -12,7 +12,6 @@ def eco_portalsu_parser():
         info = src.content.decode()
         soup = bs(info, 'html.parser')
         news = soup.find_all('div', attrs={"class": "index_anons"})
-
         for i in news:
             inf = dict()
 
@@ -41,7 +40,6 @@ def eco_portalsu_parser():
             inf['article_img'] = requests.get(('https://ecoportal.su' + article.find('newsimage').img['src']), headers=header).content
 
             date.append(inf)
-        return date
-
+    return date
 
 

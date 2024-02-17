@@ -4,7 +4,7 @@ import logging
 from src.routes.news import get_news
 
 logging.basicConfig(filename='logs.log',
-                    level=logging.INFO,
+                    level=logging.info(),
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 
 api_router = APIRouter(prefix='/api')
