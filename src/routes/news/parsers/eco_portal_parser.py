@@ -28,7 +28,7 @@ def eco_portalsu_parser():
             hour, minute = map(int, data[1].split(':'))
             inf['date'] = datetime.datetime(year, month, day, hour, minute)
 
-            article = bs(requests.get(inf['href'], headers=header).content.decode(), 'html.parser')
+            article = bs(requests.get(inf['url'], headers=header).content.decode(), 'html.parser')
             main_text = []
             for i in article.find_all('description'):
                 main_text.append(i.text)

@@ -25,14 +25,15 @@ def get_news():
 
 
 @router.on_event("startup")
-@repeat_every(seconds=60 * 5)
+@repeat_every(seconds=60 * 1)
 def update_news():
-    db_sess = db_session.create_session()
+    logging.info('Updating news in database')
     news_list = list()
     news_list.extend(get_news_ecosphere_press())
     news_list.extend(eco_portalsu_parser())
     for i in news_list:
         try:
+            db_sess = db_session.create_session()
             news = News()
             news.title = i['title']
             news.date = i['date']
@@ -40,6 +41,7 @@ def update_news():
             news.img = i['img']
             news.url = i['url']
             db_sess.add(news)
+            db_sess.commit()
         except Exception:
             pass
-    db_sess.commit()
+    logging.info('Updated news in database')
