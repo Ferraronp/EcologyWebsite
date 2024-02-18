@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from fastapi_utils.tasks import repeat_every
 
 from src.routes.news.parsers.ecosphere_press_parser import get_news_ecosphere_press
@@ -16,16 +16,27 @@ router = APIRouter()
 @router.get("/get_news")
 def get_news():
     news_list = list()
-    try:
-        for news in get_news_ecosphere_press():
-            news_list.append(News(**news))
-    except Exception as ex:
-        logging.error(f"Can't parse ecosphere.press {ex}")
+    db_sess = db_session.create_session()
+    for news in db_sess.query(News).all():
+        dict_ = dict()
+        dict_['id'] = news.id
+        dict_['title'] = news.title
+        dict_['content'] = news.content
+        dict_['url'] = news.url
+        dict_['date'] = news.date
+        news_list.append(dict_)
     return news_list
 
 
+@router.get("/get_news_img")
+def get_news(news_id: int):
+    db_sess = db_session.create_session()
+    news_img = db_sess.query(News).filter(News.id == news_id).first().img
+    return Response(news_img)
+
+
 @router.on_event("startup")
-@repeat_every(seconds=60 * 1)
+@repeat_every(seconds=60 * 5)
 def update_news():
     logging.info('Updating news in database')
     news_list = list()

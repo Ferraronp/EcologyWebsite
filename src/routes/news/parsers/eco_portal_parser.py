@@ -7,8 +7,9 @@ def eco_portalsu_parser():
     date = []
     for part in range(1, 5 + 1):
         url = f"https://ecoportal.su//news.html?p={part}"
-        header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
-        src = requests.get(url, headers= header)
+        header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
+        src = requests.get(url, headers=header)
         info = src.content.decode()
         soup = bs(info, 'html.parser')
         news = soup.find_all('div', attrs={"class": "index_anons"})
@@ -37,9 +38,8 @@ def eco_portalsu_parser():
 
             inf['content'] = "".join(main_text).replace('\xa0', '')
 
-            inf['article_img'] = requests.get(('https://ecoportal.su' + article.find('newsimage').img['src']), headers=header).content
+            inf['article_img'] = requests.get('https://ecoportal.su' + article.find('newsimage').img['src'],
+                                              headers=header).content
 
             date.append(inf)
     return date
-
-
