@@ -7,7 +7,7 @@ import sqlalchemy.ext.declarative as dec
 
 SqlAlchemyBase = dec.declarative_base()
 
-__factory = None
+__factory: None | orm.session.sessionmaker = None
 
 
 def global_init(db_file):
@@ -31,5 +31,4 @@ def global_init(db_file):
 
 
 def create_session() -> Session:
-    global __factory
     return __factory()

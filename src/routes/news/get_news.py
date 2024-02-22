@@ -33,8 +33,11 @@ def get_news():
 @router.get("/get_news_img")
 def get_news(news_id: int):
     db_sess = db_session.create_session()
-    news_img = db_sess.query(NewsFromDB).filter(NewsFromDB.id == news_id).first().img
-    return Response(news_img)
+    news_img = db_sess.query(NewsFromDB).filter(NewsFromDB.id == news_id).first()
+    if news_img is None:
+        return Response(status_code=404)
+    news_img = news_img.img
+    return Response(content=news_img, media_type='image/jpeg')
 
 
 @router.on_event("startup")
@@ -42,8 +45,8 @@ def get_news(news_id: int):
 def update_news():
     logging.info('Updating news in database')
     news_list = list()
-    # news_list.extend(get_news_ecosphere_press())
-    # news_list.extend(eco_portalsu_parser())
+    news_list.extend(get_news_ecosphere_press())
+    news_list.extend(eco_portalsu_parser())
     for i in news_list:
         try:
             db_sess = db_session.create_session()
