@@ -1,0 +1,5 @@
+logs.log
+test.py
+.idea
+src/routes/news/database/news.db
+VirtualENV
