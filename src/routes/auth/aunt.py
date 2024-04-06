@@ -8,7 +8,7 @@ from src.routes.auth.database.models.user_model import User as UserFromDB
 from .database import db_session
 
 db_session.global_init("src/routes/auth/database/users.db")
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(tags=["Auth"])
 
 security = HTTPBasic()
 
@@ -25,13 +25,11 @@ def get_auth_user_username(credentials: Annotated[HTTPBasicCredentials, Depends(
     if user is None:
         raise unauthed_exc
 
-    # secrets
     if not secrets.compare_digest(
         credentials.password.encode("utf-8"),
         user.password.encode("utf-8")
     ):
         raise unauthed_exc
-
     return credentials.username
 
 
@@ -41,3 +39,5 @@ def demo_basic_auth_username(auth_username: str = Depends(get_auth_user_username
         "message": f"Hi, {auth_username}!",
         "username": auth_username,
     }
+
+
