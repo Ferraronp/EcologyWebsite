@@ -30,6 +30,15 @@ def get_news():
     return news_list
 
 
+@router.get("/get_news_by_id", response_model=News)
+def get_news(news_id: int):
+    db_sess = db_session.create_session()
+    news = db_sess.query(NewsFromDB).filter(NewsFromDB.id == news_id).first()
+    if news is None:
+        return Response(status_code=404)
+    return News(**news.__dict__)
+
+
 @router.get("/get_news_img")
 def get_news(news_id: int):
     db_sess = db_session.create_session()
