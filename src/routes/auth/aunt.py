@@ -1,16 +1,28 @@
-import secrets
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from passlib.context import CryptContext
 
 from src.routes.auth.database.models.user_model import User as UserFromDB
 from .database import db_session
 
+SECRET_KEY = open('src/routes/auth/key.txt').read().strip()
+ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 db_session.global_init("src/routes/auth/database/users.db")
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(tags=["Auth"])
 
 security = HTTPBasic()
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_auth_user_username(credentials: Annotated[HTTPBasicCredentials, Depends(security)]) -> str:
@@ -25,18 +37,14 @@ def get_auth_user_username(credentials: Annotated[HTTPBasicCredentials, Depends(
     if user is None:
         raise unauthed_exc
 
-    # secrets
-    if not secrets.compare_digest(
-        credentials.password.encode("utf-8"),
-        user.password.encode("utf-8")
-    ):
+    if not verify_password(credentials.password, user.password):
         raise unauthed_exc
 
     return credentials.username
 
 
 @router.post("/basic-auth")
-def demo_basic_auth_username(auth_username: str = Depends(get_auth_user_username)):
+def basic_auth_username(auth_username: str = Depends(get_auth_user_username)):
     return {
         "message": f"Hi, {auth_username}!",
         "username": auth_username,
