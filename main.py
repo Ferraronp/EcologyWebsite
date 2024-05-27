@@ -1,6 +1,15 @@
-def print_hi(name):
-    print(f'Hi, {name}')
+from fastapi import APIRouter, FastAPI
+import logging
+from src.routes.news import get_news
+from src.routes.auth import aunt, reg
 
+logging.basicConfig(filename='logs.log',
+                    level=logging.INFO,
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
 
-if __name__ == '__main__':
-    print_hi('World')
+api_router = APIRouter(prefix='/api')
+api_router.include_router(get_news.router, prefix="/news")
+api_router.include_router(aunt.router, prefix="/auth")
+api_router.include_router(reg.router, prefix="/reg")
+app = FastAPI()
+app.include_router(api_router)
